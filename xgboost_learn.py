@@ -9,10 +9,13 @@ import pandas as pd
 import numpy as np
 #import matplotlib.pyplot as plt
 import random
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 random.seed(0)
 
-NUMBER_OF_EPOCHS= [1,2,3,4,5,10]
+NUMBER_OF_EPOCHS= [1,2,3,5,10,100,1000]
+TESTS_RUN=['training_no_quantile','test_no_quantile','validation_no_quantile','training_with_quantile','test_with_quantile','validation_with_quantile']
 WINDOW_SIZE = 1
 TARGET_COLUMN = 'flow_size'
 TRAINING_PATH = './data/training/'
@@ -43,11 +46,17 @@ param = {
     'eval_metric': 'mae'
 }
 
-#print('features data',data_with_quantile.columns)
-#print('features inputs',inputs_with_quantile.columns)
 
+
+#features used in model
 features_inputs_with_quantile=inputs_with_quantile.columns.tolist()
 
+results_arr=np.zeros((6,len(NUMBER_OF_EPOCHS)))
+results_df=pd.DataFrame(results_arr, columns=NUMBER_OF_EPOCHS, index=TESTS_RUN)
+#results_df[10]['training_no_quantile']=3
+#print('results_df',results_df)
+
+#main
 def main(num_epochs):
 	#training
 	training_no_quantile = xgboost.DMatrix(inputs_no_quantile,outputs_no_quantile)
@@ -94,22 +103,28 @@ def main(num_epochs):
 
 	print('\nTRAINING\n')
 	r2_training_no_quantile=round(print_performance(training_files),5)
-
+	results_df[i]['training_no_quantile']=r2_training_no_quantile
+	
 	print('\nTEST\n')
 	r2_test_no_quantile=round(print_performance(test_files),5)
+	results_df[i]['test_no_quantile']=r2_test_no_quantile
 
 	print('\nVALIDATION\n')
 	r2_validation_no_quantile=round(print_performance(validation_files),5)
+	results_df[i]['validation_no_quantile']=r2_validation_no_quantile
 
 	print('\n\n-----------------------\n With quantiles\n')
 	print('\nTRAINING with Quantile\n')
 	r2_training_with_quantile=round(print_performance(training_files,True),5)
+	results_df[i]['training_with_quantile']=r2_training_with_quantile
 
 	print('\nTEST with Quantile\n')
 	r2_test_with_quantile=round(print_performance(test_files,True),5)
+	results_df[i]['test_with_quantile']=r2_test_with_quantile
 
 	print('\nVALIDATION with Quantile\n')
 	r2_validation_with_quantile=round(print_performance(validation_files,True),5)
+	results_df[i]['validation_with_quantile']=r2_validation_with_quantile
 
 	print('\n\n-----------------------\n Improvment due to Quantile implementation\n')
 	print('TRAINING improved by', round(100*r2_training_with_quantile/r2_training_no_quantile-100,3),'%')
@@ -121,6 +136,7 @@ def main(num_epochs):
 for i in NUMBER_OF_EPOCHS:
 	print('------------NUMBER_OF_EPOCHS:',i,'-----------')
 	main(i)
+	print('results_df\n',results_df)
 	
 
 
