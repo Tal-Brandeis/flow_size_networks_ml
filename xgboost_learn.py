@@ -12,7 +12,7 @@ import random
 
 random.seed(0)
 
-NUMBER_OF_TREES = 10
+NUMBER_OF_EPOCHS= 5
 WINDOW_SIZE = 1
 TARGET_COLUMN = 'flow_size'
 TRAINING_PATH = './data/training/'
@@ -38,8 +38,9 @@ inputs_with_quantile, outputs_with_quantile = xgboost_util.make_io(data_with_qua
 
 # fit model no training data
 param = {
-    'max_depth' : 10,
+    'max_depth' : 5,
     'booster' : 'gbtree',
+    'base_score' : 0.15,
     'eval_metric': 'mae'
 }
 
@@ -55,8 +56,8 @@ training_no_quantile = xgboost.DMatrix(inputs_no_quantile,outputs_no_quantile)
 training_with_quantile = xgboost.DMatrix(inputs_with_quantile,outputs_with_quantile,feature_names=features_inputs_with_quantile)
 
 #build model
-model_no_quantile = xgboost.train(param, training_no_quantile, 10)
-model_with_quantile = xgboost.train(param, training_with_quantile, 10)
+model_no_quantile = xgboost.train(param, training_no_quantile, NUMBER_OF_EPOCHS)
+model_with_quantile = xgboost.train(param, training_with_quantile, NUMBER_OF_EPOCHS)
 
 
 #function to print performance of iteration(train,test,validation)
