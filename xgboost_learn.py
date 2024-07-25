@@ -12,7 +12,7 @@ import random
 
 random.seed(0)
 
-NUMBER_OF_EPOCHS= 5
+NUMBER_OF_EPOCHS= [1,2,3,4,5,10]
 WINDOW_SIZE = 1
 TARGET_COLUMN = 'flow_size'
 TRAINING_PATH = './data/training/'
@@ -48,76 +48,79 @@ param = {
 
 features_inputs_with_quantile=inputs_with_quantile.columns.tolist()
 
-#training
-training_no_quantile = xgboost.DMatrix(inputs_no_quantile,outputs_no_quantile)
-training_with_quantile = xgboost.DMatrix(inputs_with_quantile,outputs_with_quantile,feature_names=features_inputs_with_quantile)
-
-#build model
-model_no_quantile = xgboost.train(param, training_no_quantile, NUMBER_OF_EPOCHS)
-model_with_quantile = xgboost.train(param, training_with_quantile, NUMBER_OF_EPOCHS)
+def main(num_epochs):
+	#training
+	training_no_quantile = xgboost.DMatrix(inputs_no_quantile,outputs_no_quantile)
+	training_with_quantile = xgboost.DMatrix(inputs_with_quantile,outputs_with_quantile,feature_names=features_inputs_with_quantile)
 
 
-#function to print performance of iteration(train,test,validation)
-def print_performance(files, quantile_active=False):
-    real = []
-    predicted = []
-    #features_to_use
-    for f in files:
-        data = xgboost_util.prepare_files([f], WINDOW_SIZE, scaling, TARGET_COLUMN, quantile_active)
-        #print('data\n',data)
-        inputs, outputs = xgboost_util.make_io(data)
-        #print('inputs\n',inputs)
-        #print('outputs\n',outputs)
-        if(quantile_active):
-        	#print('inputs',inputs)
-        	y_pred = model_with_quantile.predict(xgboost.DMatrix(inputs,feature_names=features_inputs_with_quantile))
-        	feature_importance=model_with_quantile.get_score(importance_type='weight')
-        	print('feature_importance:',feature_importance)
-        	#print('y_pred_quantile_active')
-        	#print('attributes',model_with_quantile.feature_names())
-        	
-        else:
-        	y_pred = model_no_quantile.predict(xgboost.DMatrix(inputs))
-        	feature_importance=model_no_quantile.get_score(importance_type='weight')
-        	print('feature_importance:',feature_importance)
-        
-        pred = y_pred.tolist()
-        
-        #feature_importance=model.get_score(importance_type='weight')
-        #print('feature_importance\n',feature_importance)
-        
-        real += outputs.values.tolist()
-        predicted += pred
-        #print('real\n',real)
-        #print('\npred\n',predicted)
-        
-    r2_temp=xgboost_util.print_metrics(real, predicted)
-    return r2_temp
+	#build model
+	model_no_quantile = xgboost.train(param, training_no_quantile, num_epochs)
+	model_with_quantile = xgboost.train(param, training_with_quantile, num_epochs)
 
 
-print('\nTRAINING\n')
-r2_training_no_quantile=round(print_performance(training_files),5)
+	#function to print performance of iteration(train,test,validation)
+	def print_performance(files, quantile_active=False):
+	    real = []
+	    predicted = []
+	    #features_to_use
+	    for f in files:
+	    	data = xgboost_util.prepare_files([f], WINDOW_SIZE, scaling, TARGET_COLUMN, quantile_active)
+	    	inputs, outputs = xgboost_util.make_io(data)
+	    	if(quantile_active):
+	    		y_pred = model_with_quantile.predict(xgboost.DMatrix(inputs,feature_names=features_inputs_with_quantile))
+	    		feature_importance=model_with_quantile.get_score(importance_type='weight')
+	    		print('feature_importance:',feature_importance)
+	    		#print('y_pred_quantile_active')
+	    		#print('attributes',model_with_quantile.feature_names())
+	    	else:
+	    		y_pred = model_no_quantile.predict(xgboost.DMatrix(inputs))
+	    		feature_importance=model_no_quantile.get_score(importance_type='weight')
+	    		print('feature_importance:',feature_importance)
+		
+	    	pred = y_pred.tolist()
+		
+	    	#feature_importance=model.get_score(importance_type='weight')
+	    	#print('feature_importance\n',feature_importance)
+		
+	    	real += outputs.values.tolist()
+	    	predicted += pred
+	    	#print('real\n',real)
+	    	#print('\npred\n',predicted)
+		
+	    r2_temp=xgboost_util.print_metrics(real, predicted)
+	    return r2_temp
 
-print('\nTEST\n')
-r2_test_no_quantile=round(print_performance(test_files),5)
 
-print('\nVALIDATION\n')
-r2_validation_no_quantile=round(print_performance(validation_files),5)
+	print('\nTRAINING\n')
+	r2_training_no_quantile=round(print_performance(training_files),5)
 
-print('\n\n-----------------------\n With quantiles\n')
-print('\nTRAINING with Quantile\n')
-r2_training_with_quantile=round(print_performance(training_files,True),5)
+	print('\nTEST\n')
+	r2_test_no_quantile=round(print_performance(test_files),5)
 
-print('\nTEST with Quantile\n')
-r2_test_with_quantile=round(print_performance(test_files,True),5)
+	print('\nVALIDATION\n')
+	r2_validation_no_quantile=round(print_performance(validation_files),5)
 
-print('\nVALIDATION with Quantile\n')
-r2_validation_with_quantile=round(print_performance(validation_files,True),5)
+	print('\n\n-----------------------\n With quantiles\n')
+	print('\nTRAINING with Quantile\n')
+	r2_training_with_quantile=round(print_performance(training_files,True),5)
 
-print('\n\n-----------------------\n Improvment due to Quantile implementation\n')
-print('TRAINING improved by', round(100*r2_training_with_quantile/r2_training_no_quantile-100,3),'%')
-print('TEST improved by', round(100*r2_test_with_quantile/r2_test_no_quantile-100,3),'%')
-print('VALIDATION improved by', round(100*r2_validation_with_quantile/r2_validation_no_quantile-100,3),'%')
+	print('\nTEST with Quantile\n')
+	r2_test_with_quantile=round(print_performance(test_files,True),5)
 
+	print('\nVALIDATION with Quantile\n')
+	r2_validation_with_quantile=round(print_performance(validation_files,True),5)
+
+	print('\n\n-----------------------\n Improvment due to Quantile implementation\n')
+	print('TRAINING improved by', round(100*r2_training_with_quantile/r2_training_no_quantile-100,3),'%')
+	print('TEST improved by', round(100*r2_test_with_quantile/r2_test_no_quantile-100,3),'%')
+	print('VALIDATION improved by', round(100*r2_validation_with_quantile/r2_validation_no_quantile-100,3),'%')
+
+
+
+for i in NUMBER_OF_EPOCHS:
+	print('------------NUMBER_OF_EPOCHS:',i,'-----------')
+	main(i)
+	
 
 

@@ -15,19 +15,19 @@ flow_size_validation = np.round(np.abs(mu_fs+sigma_fs*np.random.randn(size_datas
 
 
 #First call size feature
-sigma_first_call=10
+sigma_first_call=30
 first_call_training=np.round(np.abs(100*flow_size_training/mu_fs+sigma_first_call*np.random.randn(size_dataset)))
 first_call_test=np.round(np.abs(100*flow_size_test/mu_fs+sigma_first_call*np.random.randn(size_dataset)))
 first_call_validation=np.round(np.abs(100*flow_size_validation/mu_fs+sigma_first_call*np.random.randn(size_dataset)))
 
 #CPU IO feature
-sigma_CPU_call=15
+sigma_CPU_call=50
 CPU_training=np.round(np.abs(200*flow_size_training/mu_fs+sigma_CPU_call*np.random.randn(size_dataset)))
 CPU_test=np.round(np.abs(200*flow_size_test/mu_fs+sigma_CPU_call*np.random.randn(size_dataset)))
 CPU_validation=np.round(np.abs(200*flow_size_validation/mu_fs+sigma_CPU_call*np.random.randn(size_dataset)))
 
 #Disk IO feature
-sigma_disk=20
+sigma_disk=30
 Disk_training=np.round(np.abs(50*flow_size_training/mu_fs+sigma_disk*np.random.randn(size_dataset)))
 Disk_test=np.round(np.abs(50*flow_size_test/mu_fs+sigma_disk*np.random.randn(size_dataset)))
 Disk_validation=np.round(np.abs(50*flow_size_validation/mu_fs+sigma_disk*np.random.randn(size_dataset)))
