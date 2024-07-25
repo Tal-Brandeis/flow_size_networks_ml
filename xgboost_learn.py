@@ -26,7 +26,6 @@ validation_files = [os.path.join(VALIDATION_PATH, f) for f in os.listdir(VALIDAT
 
 #scaling of data to values 0-1
 scaling = xgboost_util.calculate_scaling(training_files)
-print('scaling',scaling)
 
 #preparing data for training
 data_no_quantile = xgboost_util.prepare_files(training_files, WINDOW_SIZE, scaling, TARGET_COLUMN, False)
@@ -48,8 +47,6 @@ param = {
 #print('features inputs',inputs_with_quantile.columns)
 
 features_inputs_with_quantile=inputs_with_quantile.columns.tolist()
-print('features_inputs_with_quantile\n',features_inputs_with_quantile)
-
 
 #training
 training_no_quantile = xgboost.DMatrix(inputs_no_quantile,outputs_no_quantile)
@@ -75,14 +72,14 @@ def print_performance(files, quantile_active=False):
         	#print('inputs',inputs)
         	y_pred = model_with_quantile.predict(xgboost.DMatrix(inputs,feature_names=features_inputs_with_quantile))
         	feature_importance=model_with_quantile.get_score(importance_type='weight')
-        	print('feature_importance\n',feature_importance)
+        	print('feature_importance:',feature_importance)
         	#print('y_pred_quantile_active')
         	#print('attributes',model_with_quantile.feature_names())
         	
         else:
         	y_pred = model_no_quantile.predict(xgboost.DMatrix(inputs))
         	feature_importance=model_no_quantile.get_score(importance_type='weight')
-        	print('feature_importance\n',feature_importance)
+        	print('feature_importance:',feature_importance)
         
         pred = y_pred.tolist()
         
@@ -94,24 +91,33 @@ def print_performance(files, quantile_active=False):
         #print('real\n',real)
         #print('\npred\n',predicted)
         
-    xgboost_util.print_metrics(real, predicted)
+    r2_temp=xgboost_util.print_metrics(real, predicted)
+    return r2_temp
 
 
 print('\nTRAINING\n')
-print_performance(training_files)
+r2_training_no_quantile=round(print_performance(training_files),5)
 
 print('\nTEST\n')
-print_performance(test_files)
+r2_test_no_quantile=round(print_performance(test_files),5)
 
 print('\nVALIDATION\n')
-print_performance(validation_files)
+r2_validation_no_quantile=round(print_performance(validation_files),5)
 
 print('\n\n-----------------------\n With quantiles\n')
 print('\nTRAINING with Quantile\n')
-print_performance(training_files,True)
+r2_training_with_quantile=round(print_performance(training_files,True),5)
 
 print('\nTEST with Quantile\n')
-print_performance(test_files,True)
+r2_test_with_quantile=round(print_performance(test_files,True),5)
 
 print('\nVALIDATION with Quantile\n')
-print_performance(validation_files,True)
+r2_validation_with_quantile=round(print_performance(validation_files,True),5)
+
+print('\n\n-----------------------\n Improvment due to Quantile implementation\n')
+print('TRAINING improved by', round(100*r2_training_with_quantile/r2_training_no_quantile-100,3),'%')
+print('TEST improved by', round(100*r2_test_with_quantile/r2_test_no_quantile-100,3),'%')
+print('VALIDATION improved by', round(100*r2_validation_with_quantile/r2_validation_no_quantile-100,3),'%')
+
+
+

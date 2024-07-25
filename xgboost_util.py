@@ -2,12 +2,12 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import pandas as pd
 import numpy as np
 from pandas import concat
-FLOW_SIZE_THREASH = 1000
 
 def print_metrics(real, prediction):
     print('MSE: %f' % mean_squared_error(real, prediction))
     print('MAE: %f' % mean_absolute_error(real, prediction))
     print('R2: %f' % r2_score(real, prediction))
+    return r2_score(real, prediction)
 
 def calculate_scaling(training_paths):
     scaling = {}
@@ -43,11 +43,6 @@ def prepare_files(files, window_size, scaling, target_column='flow_size',quantil
         #print('small',small)
         #print('mid',mid)
         #print('large',large)
-        #print('datat_type',type(a))
-        #print('describe\n',df.describe(numeric_only=True).loc['25%'])
-        
-        #flow_size_category=np.where(df[target_column] > FLOW_SIZE_THREASH, 1,-1)
-        #flow_size_category=np.where(df[target_column] >= float(quantiles[2]),2,1)
         flow_size_category=np.where(df[target_column] >= large ,4, np.where(df[target_column] >= mid ,3, np.where(df[target_column] >= small ,2 ,1)))
         
         #print('flow_size_category\n',flow_size_category)
