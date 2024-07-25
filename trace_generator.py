@@ -5,47 +5,54 @@ import pandas as pd
 # Generate some randomly distributed data
 sigma_fs=10e3
 mu_fs=10e3
-size_dataset=1000
+size_dataset=100
 
 
-flow_size_training = mu_fs+sigma_fs*np.random.randn(size_dataset)
-flow_size_test = mu_fs+sigma_fs*np.random.randn(size_dataset)
-flow_size_validation = mu_fs+sigma_fs*np.random.randn(size_dataset)
+# Generate flow size distribution
+flow_size_training = np.round(np.abs(mu_fs+sigma_fs*np.random.randn(size_dataset)))
+flow_size_test = np.round(np.abs(mu_fs+sigma_fs*np.random.randn(size_dataset)))
+flow_size_validation = np.round(np.abs(mu_fs+sigma_fs*np.random.randn(size_dataset)))
 
-#Ensure all values are positive and round
-flow_size_training = np.round(np.abs(flow_size_training))
-flow_size_test = np.round(np.abs(flow_size_test))
-flow_size_validation = np.round(np.abs(flow_size_validation))
 
-'''
 #First call size feature
-sigma_first_call=10
+sigma_first_call=5
 first_call_training=np.round(np.abs(100*flow_size_training/mu_fs+sigma_first_call*np.random.randn(size_dataset)))
-
 first_call_test=np.round(np.abs(100*flow_size_test/mu_fs+sigma_first_call*np.random.randn(size_dataset)))
-
 first_call_validation=np.round(np.abs(100*flow_size_validation/mu_fs+sigma_first_call*np.random.randn(size_dataset)))
-'''
 
-#print('flow_size_training\n\n',flow_size_training)
-#print('\n\nfirst_call_training\n\n',first_call_training)
+#CPU IO feature
+sigma_CPU_call=10
+CPU_training=np.round(np.abs(200*flow_size_training/mu_fs+sigma_CPU_call*np.random.randn(size_dataset)))
+CPU_test=np.round(np.abs(200*flow_size_test/mu_fs+sigma_CPU_call*np.random.randn(size_dataset)))
+CPU_validation=np.round(np.abs(200*flow_size_validation/mu_fs+sigma_CPU_call*np.random.randn(size_dataset)))
 
-'''
-#print('len data',len(data))
-df_training = pd.DataFrame({'flow_size': flow_size_training,'first_call_size':first_call_training})
+#Disk IO feature
+sigma_disk=8
+Disk_training=np.round(np.abs(50*flow_size_training/mu_fs+sigma_disk*np.random.randn(size_dataset)))
+Disk_test=np.round(np.abs(50*flow_size_test/mu_fs+sigma_disk*np.random.randn(size_dataset)))
+Disk_validation=np.round(np.abs(50*flow_size_validation/mu_fs+sigma_disk*np.random.randn(size_dataset)))
+
+
+
+#define dataframe's features 
+df_training = pd.DataFrame({'flow_size': flow_size_training,'first_call_size':first_call_training, 'CPU_IOS':CPU_training,'Disk_IO':Disk_training})
+
+df_test = pd.DataFrame({'flow_size': flow_size_test, 'first_call_size':first_call_test, 'CPU_IOS':CPU_test,'Disk_IO':Disk_test})
+
+df_validation = pd.DataFrame({'flow_size': flow_size_validation, 'first_call_size':first_call_validation, 'CPU_IOS':CPU_validation,'Disk_IO':Disk_validation})
+
+
+#csv paths
 csv_training = './data/training/training_data.csv'
-df_training.to_csv(csv_training, index=False)
-
-df_test = pd.DataFrame({'flow_size': flow_size_test, 'first_call_size':first_call_test})
 csv_test = './data/test/test_data.csv'
-df_test.to_csv(csv_test, index=False)
-
-df_validation = pd.DataFrame({'flow_size': flow_size_validation, 'first_call_size':first_call_validation})
 csv_validation = './data/validation/validation_data.csv'
+
+#Write to csvs
+df_training.to_csv(csv_training, index=False)
+df_test.to_csv(csv_test, index=False)
 df_validation.to_csv(csv_validation, index=False)
 
 '''
-
 #print('len data',len(data))
 df_training = pd.DataFrame({'flow_size': flow_size_training})
 csv_training = './data/training/training_data.csv'
@@ -58,7 +65,7 @@ df_test.to_csv(csv_test, index=False)
 df_validation = pd.DataFrame({'flow_size': flow_size_validation})
 csv_validation = './data/validation/validation_data.csv'
 df_validation.to_csv(csv_validation, index=False)
-
+'''
 
 
 

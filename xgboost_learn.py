@@ -26,6 +26,7 @@ validation_files = [os.path.join(VALIDATION_PATH, f) for f in os.listdir(VALIDAT
 
 #scaling of data to values 0-1
 scaling = xgboost_util.calculate_scaling(training_files)
+print('scaling',scaling)
 
 #preparing data for training
 data_no_quantile = xgboost_util.prepare_files(training_files, WINDOW_SIZE, scaling, TARGET_COLUMN, False)
@@ -37,16 +38,21 @@ inputs_with_quantile, outputs_with_quantile = xgboost_util.make_io(data_with_qua
 
 # fit model no training data
 param = {
-    'max_depth' : 5,
+    'max_depth' : 10,
     'booster' : 'gbtree',
-    'base_score' : 2,
     'eval_metric': 'mae'
 }
+
+#print('features data',data_with_quantile.columns)
+#print('features inputs',inputs_with_quantile.columns)
+
+features_inputs_with_quantile=inputs_with_quantile.columns.tolist()
+print('features_inputs_with_quantile\n',features_inputs_with_quantile)
 
 
 #training
 training_no_quantile = xgboost.DMatrix(inputs_no_quantile,outputs_no_quantile)
-training_with_quantile = xgboost.DMatrix(inputs_with_quantile,outputs_with_quantile)
+training_with_quantile = xgboost.DMatrix(inputs_with_quantile,outputs_with_quantile,feature_names=features_inputs_with_quantile)
 
 #build model
 model_no_quantile = xgboost.train(param, training_no_quantile, 10)
@@ -57,6 +63,7 @@ model_with_quantile = xgboost.train(param, training_with_quantile, 10)
 def print_performance(files, quantile_active=False):
     real = []
     predicted = []
+    #features_to_use
     for f in files:
         data = xgboost_util.prepare_files([f], WINDOW_SIZE, scaling, TARGET_COLUMN, quantile_active)
         #print('data\n',data)
@@ -64,10 +71,17 @@ def print_performance(files, quantile_active=False):
         #print('inputs\n',inputs)
         #print('outputs\n',outputs)
         if(quantile_active):
-        	y_pred = model_with_quantile.predict(xgboost.DMatrix(inputs))
+        	#print('inputs',inputs)
+        	y_pred = model_with_quantile.predict(xgboost.DMatrix(inputs,feature_names=features_inputs_with_quantile))
+        	feature_importance=model_with_quantile.get_score(importance_type='weight')
+        	print('feature_importance\n',feature_importance)
         	#print('y_pred_quantile_active')
+        	#print('attributes',model_with_quantile.feature_names())
+        	
         else:
         	y_pred = model_no_quantile.predict(xgboost.DMatrix(inputs))
+        	feature_importance=model_no_quantile.get_score(importance_type='weight')
+        	print('feature_importance\n',feature_importance)
         
         pred = y_pred.tolist()
         
@@ -76,6 +90,8 @@ def print_performance(files, quantile_active=False):
         
         real += outputs.values.tolist()
         predicted += pred
+        #print('real\n',real)
+        #print('\npred\n',predicted)
         
     xgboost_util.print_metrics(real, predicted)
 

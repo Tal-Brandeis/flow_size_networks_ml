@@ -19,6 +19,7 @@ def calculate_scaling(training_paths):
             if column not in scaling:
                scaling[column] = 0.
             scaling[column] = max(scaling[column], float(df[column].max()))
+        scaling['fs_category']=4
     return scaling
 
 def resize(s,scaling):
@@ -36,9 +37,9 @@ def prepare_files(files, window_size, scaling, target_column='flow_size',quantil
         #print('quantile\n',df.quantile(q=[0.25, 0.5, 0.75], numeric_only=True).values)
         quantiles=df.quantile(q=[0.25, 0.5, 0.75], numeric_only=True).values.astype(float)
         #print('quantiles',quantiles)
-        small=float(quantiles[0].astype(float))
-        mid=float(quantiles[1].astype(float))
-        large=float(quantiles[2].astype(float))
+        small=float(quantiles[0][0].astype(float))
+        mid=float(quantiles[1][0].astype(float))
+        large=float(quantiles[2][0].astype(float))
         #print('small',small)
         #print('mid',mid)
         #print('large',large)
@@ -55,13 +56,16 @@ def prepare_files(files, window_size, scaling, target_column='flow_size',quantil
         #print('3 quantile 0.5-0.75',(flow_size_category==3).sum())
         #print('2 quantile 0.25-0.5',(flow_size_category==2).sum())
         #print('1 quantile 0-0.25',(flow_size_category==1).sum())
-
+        if(quantile_active):
+        	df.insert(df.shape[1],'fs_category',flow_size_category)
         df = df.apply((lambda x: resize(x, scaling)), axis=0)
         #print('df_after scale\n',df)
+        
 
         result=df
-        if(quantile_active):
-        	result.insert(1,'flow_size_category',flow_size_category)
+        #print('result.shape',result.shape[1])
+        #if(quantile_active):
+        #	result.insert(result.shape[1],'fs_category',flow_size_category)
         
         #print('result',result)
 
@@ -71,15 +75,17 @@ def make_io(data):
     #print('\n\n\n\nmake_io\n\n\n\n')
     inputs = None
     outputs = None
-    #print('data\n',data)
+    #print('data\n',data.iloc[:,data.columns != 'flow_size'])
+    #print('data type',type(data))
 
-    #inputs=data.iloc[:,0]
-    inputs=data
+    inputs=data.iloc[:,data.columns != 'flow_size']
+    #inputs=data
     
     #print('inputs\n',inputs)
-    outputs=data
+    #outputs=data
     #outputs=data.iloc[:,0]
     #outputs=data.iloc[:,-1]
+    outputs=data.iloc[:,data.columns == 'flow_size']
     #print('\noutputs\n',outputs)
     #print('\noutputs[1]\n',data.iloc[1])
     #print('outputs type\n',type(outputs))
