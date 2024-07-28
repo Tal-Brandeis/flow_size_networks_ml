@@ -138,8 +138,11 @@ for i in NUMBER_OF_EPOCHS:
 	main(i)
 
 print('results_df\n',results_df)
-print('type results',type(results_df))
+results_df.to_csv('results_performance_epochs.csv')
+#np.savetxt('results_performance_epochs.csv',results_df,)
+#print('type results',type(results_df))
 xgboost_util.plot_results_epochs(results_df)
+
 
 	
 

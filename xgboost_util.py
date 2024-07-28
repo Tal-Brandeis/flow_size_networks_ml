@@ -6,23 +6,7 @@ import matplotlib.pyplot as plt
 import os
 
 def plot_results_epochs(results_df):
-	#print('columns',results_df.columns)
-	#print('index',results_df.index)
-	#print('values',results_df.values)
 	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 20))
-	#plt.figure()
-	'''
-	for i in range(results_df.shape[0]):
-		plt.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
-	
-	plt.xlabel('Number of Epochs')
-	plt.ylabel('R^2 values')
-	plt.title('Performance vs #Epochs')
-	plt.legend()	
-	plt.xscale('log')
-	plt.grid()
-	plt.show()
-	'''
 	for i in range(results_df.shape[0]):
 		if(results_df.index[i].startswith('train')):
 			ax1.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
@@ -53,7 +37,7 @@ def plot_results_epochs(results_df):
 	
 	plt.tight_layout()
 	plt.savefig('plots/Performance_vs_num_epochs.jpeg', format='jpeg')
-	plt.show()
+	#plt.show()
 	
 
 
