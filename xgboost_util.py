@@ -2,6 +2,60 @@ from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
 import pandas as pd
 import numpy as np
 from pandas import concat
+import matplotlib.pyplot as plt
+import os
+
+def plot_results_epochs(results_df):
+	#print('columns',results_df.columns)
+	#print('index',results_df.index)
+	#print('values',results_df.values)
+	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 20))
+	#plt.figure()
+	'''
+	for i in range(results_df.shape[0]):
+		plt.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
+	
+	plt.xlabel('Number of Epochs')
+	plt.ylabel('R^2 values')
+	plt.title('Performance vs #Epochs')
+	plt.legend()	
+	plt.xscale('log')
+	plt.grid()
+	plt.show()
+	'''
+	for i in range(results_df.shape[0]):
+		if(results_df.index[i].startswith('train')):
+			ax1.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
+		if(results_df.index[i].startswith('test')):
+			ax2.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
+		if(results_df.index[i].startswith('validation')):
+			ax3.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
+	
+	ax1.set_title('Training Performance vs #Epochs')
+	ax2.set_title('Test Performance vs #Epochs')
+	ax3.set_title('Validation Performance vs #Epochs')
+	
+	ax1.set_xlabel('Number of Epochs')
+	ax1.set_ylabel('$R^2$ values')
+	ax1.set_xscale('log')
+	ax1.legend(loc='lower right')
+	ax1.grid()
+	ax2.set_xlabel('Number of Epochs')
+	ax2.set_ylabel('$R^2$ values')
+	ax2.set_xscale('log')
+	ax2.legend(loc='lower right')
+	ax2.grid()
+	ax3.set_xlabel('Number of Epochs')
+	ax3.set_ylabel('$R^2$ values')
+	ax3.set_xscale('log')
+	ax3.legend(loc='lower right')
+	ax3.grid()
+	
+	plt.tight_layout()
+	plt.savefig('plots/Performance_vs_num_epochs.jpeg', format='jpeg')
+	plt.show()
+	
+
 
 def print_metrics(real, prediction):
     print('MSE: %f' % mean_squared_error(real, prediction))

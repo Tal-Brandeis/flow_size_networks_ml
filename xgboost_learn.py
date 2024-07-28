@@ -134,9 +134,13 @@ def main(num_epochs):
 
 
 for i in NUMBER_OF_EPOCHS:
-	print('------------NUMBER_OF_EPOCHS:',i,'-----------')
+	print('\n\n\n------------NUMBER_OF_EPOCHS:',i,'-----------')
 	main(i)
-	print('results_df\n',results_df)
+
+print('results_df\n',results_df)
+print('type results',type(results_df))
+xgboost_util.plot_results_epochs(results_df)
+
 	
 
 
