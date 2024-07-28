@@ -5,6 +5,62 @@ from pandas import concat
 import matplotlib.pyplot as plt
 import os
 
+def check_false_classifiy(real,pred):
+	real_arr=np.array(real)
+	pred_arr=np.array(pred)
+	#print('bigger',np.sum(pred_arr>real_arr))
+	#print('exact',np.sum(pred_arr==real_arr))
+	#print('smaller',np.sum(pred_arr<real_arr))
+	temp=np.zeros(len(real))
+	
+	for i in range(len(real)):
+		if(pred_arr[i]>real_arr[i]):
+			temp[i]=3
+		if(pred_arr[i]==real_arr[i]):
+			temp[i]=2
+		if(pred_arr[i]<real_arr[i]):
+			temp[i]=1	
+				
+	
+	#print('temp',temp)
+	#print('temp',type(temp))
+	#print('length',temp.size)
+	greater=(temp==3).sum()
+	exact=(temp==2).sum()
+	smaller=(temp==1).sum()
+	#print('Greater',greater)
+	#print('exact',exact)
+	#print('smaller',smaller)
+	#print('Fail',(temp==0).sum())
+	#print('Total',temp.size)
+	return greater,exact,smaller
+	
+	
+def plot_false_classifiy(fc_df):
+	
+	labels='Greater','Exact', 'Smaller'
+	colors=['gray','cyan','rosybrown']
+	
+	
+	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 20))
+	for i in range(fc_df.shape[0]):
+		if(fc_df.index[i].startswith('training')):
+			ax1.pie(fc_df.values[i],labels=labels,colors=colors, autopct='%1.1f%%')
+		if(fc_df.index[i].startswith('test')):
+			ax2.pie(fc_df.values[i],labels=labels,colors=colors, autopct='%1.1f%%')
+		if(fc_df.index[i].startswith('validation')):
+			ax3.pie(fc_df.values[i],labels=labels,colors=colors, autopct='%1.1f%%')
+	
+	ax1.set_title('Training classify')
+	ax2.set_title('Test classify')
+	ax3.set_title('Validation classify')
+	#plt.show()
+	plt.tight_layout()
+	
+	plt.savefig('plots/classification_false_classify.jpeg', format='jpeg' ,dpi=300)
+	
+		
+
 def plot_features(features_importance_df):
 	
 	plt.figure()
@@ -13,7 +69,7 @@ def plot_features(features_importance_df):
 	plt.ylabel('feature importance')
 
 	plt.savefig('plots/classifiction_feature_importance.jpeg', format='jpeg' ,dpi=300)
-	plt.show()
+	#plt.show()
 	
 
 
