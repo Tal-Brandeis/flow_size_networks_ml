@@ -8,11 +8,11 @@ import os
 def plot_results_epochs(results_df):
 	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 20))
 	for i in range(results_df.shape[0]):
-		if(results_df.index[i].startswith('train')):
+		if(results_df.index[i].startswith('training_')):
 			ax1.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
-		if(results_df.index[i].startswith('test')):
+		if(results_df.index[i].startswith('test_')):
 			ax2.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
-		if(results_df.index[i].startswith('validation')):
+		if(results_df.index[i].startswith('validation_')):
 			ax3.plot(results_df.columns,results_df.values[i], label=results_df.index[i])
 	
 	ax1.set_title('Training Performance vs #Epochs')
@@ -36,7 +36,7 @@ def plot_results_epochs(results_df):
 	ax3.grid()
 	
 	plt.tight_layout()
-	plt.savefig('plots/Performance_vs_num_epochs.jpeg', format='jpeg')
+	plt.savefig('plots/Performance_vs_num_epochs.jpeg', format='jpeg' ,dpi=300)
 	#plt.show()
 	
 

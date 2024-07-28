@@ -15,7 +15,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 random.seed(0)
 
 NUMBER_OF_EPOCHS= [1,2,3,5,10,100,1000]
-TESTS_RUN=['training_no_quantile','test_no_quantile','validation_no_quantile','training_with_quantile','test_with_quantile','validation_with_quantile']
+#TESTS_RUN=['training_no_quantile','test_no_quantile','validation_no_quantile','training_with_quantile','test_with_quantile','validation_with_quantile']
+TESTS_RUN=['training_no_quantile','test_no_quantile','validation_no_quantile','training_with_quantile','test_with_quantile','validation_with_quantile','training-improvement','test-improvement','validation-improvement']
+
 WINDOW_SIZE = 1
 TARGET_COLUMN = 'flow_size'
 TRAINING_PATH = './data/training/'
@@ -51,7 +53,7 @@ param = {
 #features used in model
 features_inputs_with_quantile=inputs_with_quantile.columns.tolist()
 
-results_arr=np.zeros((6,len(NUMBER_OF_EPOCHS)))
+results_arr=np.zeros((len(TESTS_RUN),len(NUMBER_OF_EPOCHS)))
 results_df=pd.DataFrame(results_arr, columns=NUMBER_OF_EPOCHS, index=TESTS_RUN)
 #results_df[10]['training_no_quantile']=3
 #print('results_df',results_df)
@@ -127,20 +129,25 @@ def main(num_epochs):
 	results_df[i]['validation_with_quantile']=r2_validation_with_quantile
 
 	print('\n\n-----------------------\n Improvment due to Quantile implementation\n')
+	results_df[i]['training-improvement']=round(100*r2_training_with_quantile/r2_training_no_quantile-100,3)
+	results_df[i]['test-improvement']=round(100*r2_test_with_quantile/r2_test_no_quantile-100,3)
+	results_df[i]['validation-improvement']=round(100*r2_validation_with_quantile/r2_validation_no_quantile-100,3)
+	
 	print('TRAINING improved by', round(100*r2_training_with_quantile/r2_training_no_quantile-100,3),'%')
 	print('TEST improved by', round(100*r2_test_with_quantile/r2_test_no_quantile-100,3),'%')
 	print('VALIDATION improved by', round(100*r2_validation_with_quantile/r2_validation_no_quantile-100,3),'%')
+	
 
 
-
+#run iterations on NUMBER_OF_EPOCHS
 for i in NUMBER_OF_EPOCHS:
 	print('\n\n\n------------NUMBER_OF_EPOCHS:',i,'-----------')
 	main(i)
 
+
+#print and save results
 print('results_df\n',results_df)
 results_df.to_csv('results_performance_epochs.csv')
-#np.savetxt('results_performance_epochs.csv',results_df,)
-#print('type results',type(results_df))
 xgboost_util.plot_results_epochs(results_df)
 
 
