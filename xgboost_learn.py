@@ -194,7 +194,8 @@ for i in NUMBER_OF_EPOCHS:
 print('results_df\n',results_df)
 results_df.to_csv('results_performance_epochs.csv')
 xgboost_util.plot_results_epochs(results_df)
-print('features_importance_df\n',features_importance_df.fillna(0))
+xgboost_util.plot_improvement_results(results_df)
+#print('features_importance_df\n',features_importance_df.fillna(0))
 xgboost_util.plot_features(features_importance_df.fillna(0))
 
 

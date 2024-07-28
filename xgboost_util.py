@@ -56,9 +56,49 @@ def plot_results_epochs(results_df):
 	
 	plt.tight_layout()
 	plt.savefig('plots/Performance_vs_num_epochs.jpeg', format='jpeg' ,dpi=300)
+	
 	#plt.show()
 	
 
+def plot_improvement_results(results_df):
+	
+	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 10))
+	syn_columns=list(range(1,len(results_df.columns.values)+1))
+	for i in range(results_df.shape[0]):
+		if(results_df.index[i].startswith('training-')):
+			ax1.bar(syn_columns,results_df.values[i], label=results_df.index[i],width=0.5)
+		if(results_df.index[i].startswith('test-')):
+			ax2.bar(syn_columns,results_df.values[i], label=results_df.index[i],width=0.5)
+		if(results_df.index[i].startswith('validation-')):
+			ax3.bar(syn_columns,results_df.values[i], label=results_df.index[i],width=0.5)
+	
+	ax1.set_title('Training Improvement due to Quantile implementation')
+	ax2.set_title('Test Improvement due to Quantile implementation')
+	ax3.set_title('Validation Improvement due to Quantile implementation')
+	
+	ax1.set_ylabel('Improvement [%]')
+	ax1.set_xlabel('Number of Epochs')
+	#ax1.grid()
+	ax1.set_xticks(range(1,len(results_df.columns.values)+1))
+	ax1.set_xticklabels(results_df.columns.values)
+	
+	
+	ax2.set_ylabel('Improvement [%]')
+	ax2.set_xlabel('Number of Epochs')
+	#ax2.grid()
+	ax2.set_xticks(range(1,len(results_df.columns.values)+1))
+	ax2.set_xticklabels(results_df.columns.values)
+	
+	ax3.set_ylabel('Improvement [%]')
+	ax3.set_xlabel('Number of Epochs')
+	ax3.set_xticks(range(1,len(results_df.columns.values)+1))
+	ax3.set_xticklabels(results_df.columns.values)
+	#ax3.grid()
+	
+	plt.tight_layout()
+	plt.savefig('plots/quantile_improvement.jpeg', format='jpeg' ,dpi=300)
+	#plt.show()
+	
 
 def print_metrics(real, prediction):
     print('MSE: %f' % mean_squared_error(real, prediction))
