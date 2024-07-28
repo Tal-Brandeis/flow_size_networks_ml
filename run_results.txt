@@ -1,0 +1,315 @@
+
+
+
+------------NUMBER_OF_EPOCHS: 1 -----------
+
+TRAINING
+
+MSE: 0.039603
+MAE: 0.151999
+R2: 0.165020
+
+TEST
+
+MSE: 0.036756
+MAE: 0.147915
+R2: 0.150785
+
+VALIDATION
+
+MSE: 0.035121
+MAE: 0.143697
+R2: 0.187390
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.039052
+MAE: 0.149887
+R2: 0.176639
+
+TEST with Quantile
+
+MSE: 0.036022
+MAE: 0.145366
+R2: 0.167737
+
+VALIDATION with Quantile
+
+MSE: 0.033857
+MAE: 0.138622
+R2: 0.216645
+
+
+
+------------NUMBER_OF_EPOCHS: 2 -----------
+
+TRAINING
+
+MSE: 0.020985
+MAE: 0.110817
+R2: 0.557558
+
+TEST
+
+MSE: 0.020046
+MAE: 0.109671
+R2: 0.536854
+
+VALIDATION
+
+MSE: 0.019034
+MAE: 0.107210
+R2: 0.559606
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.020234
+MAE: 0.107324
+R2: 0.573393
+
+TEST with Quantile
+
+MSE: 0.018709
+MAE: 0.104086
+R2: 0.567741
+
+VALIDATION with Quantile
+
+MSE: 0.017304
+MAE: 0.098821
+R2: 0.599640
+
+
+
+------------NUMBER_OF_EPOCHS: 3 -----------
+
+TRAINING
+
+MSE: 0.011552
+MAE: 0.082582
+R2: 0.756448
+
+TEST
+
+MSE: 0.011456
+MAE: 0.083417
+R2: 0.735316
+
+VALIDATION
+
+MSE: 0.010801
+MAE: 0.081965
+R2: 0.750092
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.010806
+MAE: 0.077975
+R2: 0.772173
+
+TEST with Quantile
+
+MSE: 0.010213
+MAE: 0.076314
+R2: 0.764037
+
+VALIDATION with Quantile
+
+MSE: 0.009249
+MAE: 0.071870
+R2: 0.786001
+
+
+
+------------NUMBER_OF_EPOCHS: 5 -----------
+
+TRAINING
+
+MSE: 0.004288
+MAE: 0.050875
+R2: 0.909588
+
+TEST
+
+MSE: 0.004908
+MAE: 0.055362
+R2: 0.886599
+
+VALIDATION
+
+MSE: 0.004624
+MAE: 0.054486
+R2: 0.893008
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.003617
+MAE: 0.044924
+R2: 0.923745
+
+TEST with Quantile
+
+MSE: 0.003711
+MAE: 0.045656
+R2: 0.914269
+
+VALIDATION with Quantile
+
+MSE: 0.003299
+MAE: 0.043311
+R2: 0.923670
+
+
+
+------------NUMBER_OF_EPOCHS: 10 -----------
+
+TRAINING
+
+MSE: 0.001630
+MAE: 0.032121
+R2: 0.965637
+
+TEST
+
+MSE: 0.002749
+MAE: 0.041769
+R2: 0.936480
+
+VALIDATION
+
+MSE: 0.002618
+MAE: 0.040497
+R2: 0.939417
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.001037
+MAE: 0.025222
+R2: 0.978137
+
+TEST with Quantile
+
+MSE: 0.001599
+MAE: 0.031397
+R2: 0.963053
+
+VALIDATION with Quantile
+
+MSE: 0.001515
+MAE: 0.030894
+R2: 0.964938
+
+
+
+------------NUMBER_OF_EPOCHS: 100 -----------
+
+TRAINING
+
+MSE: 0.000264
+MAE: 0.012187
+R2: 0.994442
+
+TEST
+
+MSE: 0.003269
+MAE: 0.045430
+R2: 0.924467
+
+VALIDATION
+
+MSE: 0.002990
+MAE: 0.043194
+R2: 0.930810
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.000162
+MAE: 0.009575
+R2: 0.996580
+
+TEST with Quantile
+
+MSE: 0.001872
+MAE: 0.033882
+R2: 0.956759
+
+VALIDATION with Quantile
+
+MSE: 0.001794
+MAE: 0.033098
+R2: 0.958481
+
+
+
+------------NUMBER_OF_EPOCHS: 1000 -----------
+
+TRAINING
+
+MSE: 0.000013
+MAE: 0.002532
+R2: 0.999718
+
+TEST
+
+MSE: 0.003549
+MAE: 0.047195
+R2: 0.918003
+
+VALIDATION
+
+MSE: 0.003214
+MAE: 0.044711
+R2: 0.925629
+
+
+-----------------------
+ With quantiles
+
+
+TRAINING with Quantile
+
+MSE: 0.000010
+MAE: 0.002321
+R2: 0.999783
+
+TEST with Quantile
+
+MSE: 0.002009
+MAE: 0.035037
+R2: 0.953577
+
+VALIDATION with Quantile
+
+MSE: 0.001920
+MAE: 0.034220
+R2: 0.955586
