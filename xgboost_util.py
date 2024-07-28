@@ -5,6 +5,25 @@ from pandas import concat
 import matplotlib.pyplot as plt
 import os
 
+def plot_features(features_importance_df):
+	
+	fig, (ax1, ax2) = plt.subplots(2, 1,figsize=(10, 10))
+	ax1.bar(features_importance_df.columns,features_importance_df.values[0])
+	ax2.bar(features_importance_df.columns,features_importance_df.values[3])
+	
+	ax1.set_title('Feature importance original method')
+	ax2.set_title('Feature importance with quantile')
+	
+	ax1.set_ylabel('feature importance')
+	#ax1.grid()
+	ax2.set_ylabel('feature importance')
+	#ax2.grid()
+	plt.tight_layout()
+	plt.savefig('plots/feature_importance.jpeg', format='jpeg' ,dpi=300)
+	#plt.show()
+	
+
+
 def plot_results_epochs(results_df):
 	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 20))
 	for i in range(results_df.shape[0]):
