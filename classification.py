@@ -59,18 +59,14 @@ false_classify_df=pd.DataFrame(false_classify_arr, columns=fc_columns, index=TES
 
 
 #main
-def main(num_epochs):
-	#training
-	#training = xgboost.DMatrix(inputs,outputs)
+def main(num):
 
-	#build model
-	#model= xgboost.train(param, training, num_epochs)
-	
-	#print('outputs\n',outputs)
+	#labels
 	le=LabelEncoder()
 	y=le.fit_transform(np.ravel(outputs))
-	model=RandomForestClassifier(n_estimators=i, random_state=42)
-	#model=RandomForestClassifier(n_estimators=i)
+	#model
+	model=RandomForestClassifier(n_estimators=num, random_state=42)
+	#fit
 	model.fit(inputs,y)
 	
 	#function to print performance of iteration(train,test,validation)
@@ -82,22 +78,16 @@ def main(num_epochs):
 	    for f in files:
 	    	data = classification_util.prepare_files([f], scaling, TARGET_COLUMN)
 	    	inputs, outputs = classification_util.make_io(data)
-	    	#y_pred = model.predict(xgboost.DMatrix(inputs))
 	    	y_pred = model.predict(inputs)
-	    	#print('inputs\n',inputs)
-	    	#print('y_pred\n',y_pred)
-	    	#print('outputs\n',outputs)
-	    	#feature_importance=model.get_score(importance_type='weight')
-		
 	    	pred = y_pred.tolist()
 	    	
-		
 	    	real += outputs.values.tolist()
 	    	predicted += pred
-	    	
+		
+	    #print results MSE, MAE, R2
 	    r2_temp=classification_util.print_metrics(real, predicted)
 	    
-	    g,e,s=classification_util.check_false_classifiy(real,predicted)
+	    g,e,s=classification_util.check_false_classify(real,predicted)
 	    feature_importance=[]
 	    return r2_temp,feature_importance,g,e,s
 	
@@ -118,17 +108,13 @@ def main(num_epochs):
 	r2_validation=round(r2_validation,5)
 	results_df[i]['validation']=r2_validation
 
-	
+	#plot false classify
 	if(i==100):
-		#features_importance_df.loc['training']=fi_training
-		#features_importance_df.loc['test']=fi_test
-		#features_importance_df.loc['validation']=fi_validation
 		
 		false_classify_df.loc['training']=[g_training,e_training,s_training]
 		false_classify_df.loc['test']=[g_test,e_test,s_test]
 		false_classify_df.loc['validation']=[g_validation,e_validation,s_validation]
-		#print('false_classify_df\n',false_classify_df)
-		classification_util.plot_false_classifiy(false_classify_df)
+		classification_util.plot_false_classify(false_classify_df)
 		
 		
 		
@@ -145,16 +131,10 @@ for i in NUMBER_OF_ESTIMATORS:
 
 #print and save results
 #print('\nresults_df\n',results_df)
-results_df.to_csv('classification_results_performance_epochs.csv')
+#save results to csv
+results_df.to_csv('results/classification_results_performance_epochs.csv')
+#plot results
 classification_util.plot_results_epochs(results_df)
 
-#print('features_importance_df\n',features_importance_df.fillna(0))
-#classification_util.plot_features(features_importance_df.fillna(0))
-
-
-
-
-
-	
 
 

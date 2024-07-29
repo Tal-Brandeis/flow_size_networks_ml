@@ -47,27 +47,14 @@ csv_training = './data/training/training_data.csv'
 csv_test = './data/test/test_data.csv'
 csv_validation = './data/validation/validation_data.csv'
 
-#Write to csvs
+#write to csvs
 df_training.to_csv(csv_training, index=False)
 df_test.to_csv(csv_test, index=False)
 df_validation.to_csv(csv_validation, index=False)
 
-'''
-#print('len data',len(data))
-df_training = pd.DataFrame({'flow_size': flow_size_training})
-csv_training = './data/training/training_data.csv'
-df_training.to_csv(csv_training, index=False)
-
-df_test = pd.DataFrame({'flow_size': flow_size_test})
-csv_test = './data/test/test_data.csv'
-df_test.to_csv(csv_test, index=False)
-
-df_validation = pd.DataFrame({'flow_size': flow_size_validation})
-csv_validation = './data/validation/validation_data.csv'
-df_validation.to_csv(csv_validation, index=False)
-'''
 
 
+##plot graphs:
 
 #print('\ndata_training\n',data_training)
 # Sort the data

@@ -54,9 +54,7 @@ param = {
 #features used in model
 features_inputs_with_quantile=inputs_with_quantile.columns.tolist()
 features_importance_arr=np.zeros((len(TESTS_RUN[:-3]),len(features_inputs_with_quantile)))
-#features_importance_list=[]
 features_importance_df=pd.DataFrame(features_importance_arr, columns=features_inputs_with_quantile, index=TESTS_RUN[:-3])
-#print(features_importance_df)
 
 results_arr=np.zeros((len(TESTS_RUN),len(NUMBER_OF_EPOCHS)))
 results_df=pd.DataFrame(results_arr, columns=NUMBER_OF_EPOCHS, index=TESTS_RUN)
@@ -87,17 +85,11 @@ def main(num_epochs):
 	    	data = xgboost_util.prepare_files([f], WINDOW_SIZE, scaling, TARGET_COLUMN, quantile_active)
 	    	inputs, outputs = xgboost_util.make_io(data)
 	    	if(quantile_active):
-	    		#start_time=time.time()
 	    		y_pred = model_with_quantile.predict(xgboost.DMatrix(inputs,feature_names=features_inputs_with_quantile))
-	    		#end_time=time.time()
-	    		#print('pred time:',(end_time-start_time)*1000)
 	    		feature_importance=model_with_quantile.get_score(importance_type='weight')
 	    		
 	    	else:
-	    		#start_time=time.time()
 	    		y_pred = model_no_quantile.predict(xgboost.DMatrix(inputs))
-	    		#end_time=time.time()
-	    		#print('pred time:',(end_time-start_time)*1000)
 	    		feature_importance=model_no_quantile.get_score(importance_type='weight')
 		
 	    	pred = y_pred.tolist()
@@ -175,10 +167,9 @@ for i in NUMBER_OF_EPOCHS:
 
 #print and save results
 #print('\nresults_df\n',results_df)
-results_df.to_csv('results_performance_epochs.csv')
+results_df.to_csv('results/results_performance_epochs.csv')
 xgboost_util.plot_results_epochs(results_df)
 xgboost_util.plot_improvement_results(results_df)
-#print('features_importance_df\n',features_importance_df.fillna(0))
 xgboost_util.plot_features(features_importance_df.fillna(0))
 
 

@@ -5,12 +5,10 @@ from pandas import concat
 import matplotlib.pyplot as plt
 import os
 
-def check_false_classifiy(real,pred):
+#plot false classify helper, count false classify cases
+def check_false_classify(real,pred):
 	real_arr=np.array(real)
 	pred_arr=np.array(pred)
-	#print('bigger',np.sum(pred_arr>real_arr))
-	#print('exact',np.sum(pred_arr==real_arr))
-	#print('smaller',np.sum(pred_arr<real_arr))
 	temp=np.zeros(len(real))
 	
 	for i in range(len(real)):
@@ -22,21 +20,15 @@ def check_false_classifiy(real,pred):
 			temp[i]=1	
 				
 	
-	#print('temp',temp)
-	#print('temp',type(temp))
-	#print('length',temp.size)
+	
 	greater=(temp==3).sum()
 	exact=(temp==2).sum()
 	smaller=(temp==1).sum()
-	#print('Greater',greater)
-	#print('exact',exact)
-	#print('smaller',smaller)
-	#print('Fail',(temp==0).sum())
-	#print('Total',temp.size)
+	
 	return greater,exact,smaller
 	
-	
-def plot_false_classifiy(fc_df):
+#plot false classify	
+def plot_false_classify(fc_df):
 	
 	labels='Greater','Exact', 'Smaller'
 	colors=['gray','cyan','rosybrown']
@@ -60,7 +52,7 @@ def plot_false_classifiy(fc_df):
 	plt.savefig('plots/classification_false_classify.jpeg', format='jpeg' ,dpi=300)
 	
 		
-
+#plot feature importance
 def plot_features(features_importance_df):
 	
 	plt.figure()
@@ -72,7 +64,7 @@ def plot_features(features_importance_df):
 	#plt.show()
 	
 
-
+#plot performance vs number of epochs
 def plot_results_epochs(results_df):
 	fig, (ax1, ax2, ax3) = plt.subplots(3, 1,figsize=(10, 20))
 	for i in range(results_df.shape[0]):
@@ -87,17 +79,17 @@ def plot_results_epochs(results_df):
 	ax2.set_title('Test Performance vs #Epochs')
 	ax3.set_title('Validation Performance vs #Epochs')
 	
-	ax1.set_xlabel('Number of Epochs')
+	ax1.set_xlabel('Number of Estimators')
 	ax1.set_ylabel('$R^2$ values')
 	ax1.set_xscale('log')
 	ax1.legend(loc='lower right')
 	ax1.grid()
-	ax2.set_xlabel('Number of Epochs')
+	ax2.set_xlabel('Number of Estimators')
 	ax2.set_ylabel('$R^2$ values')
 	ax2.set_xscale('log')
 	ax2.legend(loc='lower right')
 	ax2.grid()
-	ax3.set_xlabel('Number of Epochs')
+	ax3.set_xlabel('Number of Estimators')
 	ax3.set_ylabel('$R^2$ values')
 	ax3.set_xscale('log')
 	ax3.legend(loc='lower right')
@@ -106,16 +98,17 @@ def plot_results_epochs(results_df):
 	plt.tight_layout()
 	plt.savefig('plots/classification_Performance_vs_num_epochs.jpeg', format='jpeg' ,dpi=300)
 	
-	plt.show()
+	#plt.show()
 	
 
-
+#print results MSE, MAE, R2
 def print_metrics(real, prediction):
     print('MSE: %f' % mean_squared_error(real, prediction))
     print('MAE: %f' % mean_absolute_error(real, prediction))
     print('R2: %f' % r2_score(real, prediction))
     return r2_score(real, prediction)
-
+    
+#function that returns scaling factors
 def calculate_scaling(training_paths):
     scaling = {}
     #calculate scaling factors
@@ -125,15 +118,17 @@ def calculate_scaling(training_paths):
         for column in df.columns:
             if column not in scaling:
                scaling[column] = 0.
-            #scaling[column] = max(scaling[column], float(df[column].max()))
-            scaling[column] = 1
-        #scaling['fs_category']=4
+            scaling[column] = max(scaling[column], float(df[column].max()))
+            #scaling[column] = 1
+        #scaling['fs_category']=3
         scaling['fs_category']=1
     return scaling
 
+#function that resizes
 def resize(s,scaling):
     return s/scaling[s.name]
 
+#function that reads data from files and arranges it
 def prepare_files(files, scaling, target_column='fs_category'):
     result = []
 
@@ -141,56 +136,32 @@ def prepare_files(files, scaling, target_column='fs_category'):
         #print('\n\n\n prepare_files\n\n\n')
         df = pd.read_csv(f, index_col=False)
 
-        #print('quantile\n',df.quantile(q=[0.25, 0.5, 0.75], numeric_only=True).values)
+        
         quantiles=df.quantile(q=[0.25, 0.5, 0.75], numeric_only=True).values.astype(float)
-        #print('quantiles',quantiles)
+        
         small=float(quantiles[0][0].astype(float))
         mid=float(quantiles[1][0].astype(float))
         large=float(quantiles[2][0].astype(float))
-        #print('small',small)
-        #print('mid',mid)
-        #print('large',large)
-        
-        #flow_size_category=np.where(df['flow_size'] >= large ,4, np.where(df['flow_size'] >= mid ,3, np.where(df['flow_size'] >= small ,2 ,1)))
         
         flow_size_category=np.where(df['flow_size'] >= large ,3, np.where(df['flow_size'] >= mid ,2, np.where(df['flow_size'] >= small ,1 ,0)))
         
-        #print('flow_size_category\n',flow_size_category)
-        #print('flow_size_category len\n',len(flow_size_category))
-        #print('4 quantile 0.75-1',(flow_size_category==4).sum())
-        #print('3 quantile 0.5-0.75',(flow_size_category==3).sum())
-        #print('2 quantile 0.25-0.5',(flow_size_category==2).sum())
-        #print('1 quantile 0-0.25',(flow_size_category==1).sum())
         df.insert(df.shape[1],'fs_category',flow_size_category)
         df = df.apply((lambda x: resize(x, scaling)), axis=0)
-        #print('df_after scale\n',df)
         
 
         result=df
-        #print('result.shape',result.shape[1])
-        #if(quantile_active):
-        #	result.insert(result.shape[1],'fs_category',flow_size_category)
-        
-        #print('result',result)
 
     return result
 
+#function that splits dataset to input and output of the ML algoritham
 def make_io(data):
     #print('\n\n\n\nmake_io\n\n\n\n')
     inputs = None
     outputs = None
-    #print('data\n',data.iloc[:,data.columns != 'fs_category'])
-    #print('data type',type(data))
 
     inputs=data.iloc[:,data.columns != 'fs_category']
     inputs=inputs.iloc[:,inputs.columns != 'flow_size']
-    #inputs=data
-    
-    #print('inputs\n',inputs)
     
     outputs=data.iloc[:,data.columns == 'fs_category']
-    #print('\noutputs\n',outputs)
-
-    
-    #print('\noutputs\n',outputs)    
+   
     return (inputs, outputs)

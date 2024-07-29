@@ -25,4 +25,3 @@ pyenv install $PYENV_VERSION
 pip install -r requirements.txt
 # Reset version
 unset PYENV_VERSION
-
