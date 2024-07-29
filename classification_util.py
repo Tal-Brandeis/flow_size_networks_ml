@@ -60,7 +60,7 @@ def plot_features(features_importance_df):
 	plt.title('Feature importance classification')
 	plt.ylabel('feature importance')
 
-	plt.savefig('plots/classifiction_feature_importance.jpeg', format='jpeg' ,dpi=300)
+	#plt.savefig('plots/classification_feature_importance.jpeg', format='jpeg' ,dpi=300)
 	#plt.show()
 	
 
