@@ -106,7 +106,7 @@ def plot_results_epochs(results_df):
 	plt.tight_layout()
 	plt.savefig('plots/classification_Performance_vs_num_epochs.jpeg', format='jpeg' ,dpi=300)
 	
-	#plt.show()
+	plt.show()
 	
 
 
@@ -125,8 +125,10 @@ def calculate_scaling(training_paths):
         for column in df.columns:
             if column not in scaling:
                scaling[column] = 0.
-            scaling[column] = max(scaling[column], float(df[column].max()))
-        scaling['fs_category']=4
+            #scaling[column] = max(scaling[column], float(df[column].max()))
+            scaling[column] = 1
+        #scaling['fs_category']=4
+        scaling['fs_category']=1
     return scaling
 
 def resize(s,scaling):
@@ -149,7 +151,9 @@ def prepare_files(files, scaling, target_column='fs_category'):
         #print('mid',mid)
         #print('large',large)
         
-        flow_size_category=np.where(df['flow_size'] >= large ,4, np.where(df['flow_size'] >= mid ,3, np.where(df['flow_size'] >= small ,2 ,1)))
+        #flow_size_category=np.where(df['flow_size'] >= large ,4, np.where(df['flow_size'] >= mid ,3, np.where(df['flow_size'] >= small ,2 ,1)))
+        
+        flow_size_category=np.where(df['flow_size'] >= large ,3, np.where(df['flow_size'] >= mid ,2, np.where(df['flow_size'] >= small ,1 ,0)))
         
         #print('flow_size_category\n',flow_size_category)
         #print('flow_size_category len\n',len(flow_size_category))
