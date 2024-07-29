@@ -56,7 +56,7 @@ def plot_results_epochs(results_df):
 	ax3.grid()
 	
 	plt.tight_layout()
-	plt.savefig('plots/Performance_vs_num_epochs.jpeg', format='jpeg' ,dpi=300)
+	plt.savefig('plots/performance_vs_num_epochs.jpeg', format='jpeg' ,dpi=300)
 	
 	#plt.show()
 	
